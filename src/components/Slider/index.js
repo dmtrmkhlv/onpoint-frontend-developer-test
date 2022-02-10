@@ -2,22 +2,42 @@ import {React, useState} from "react";
 import styles from "../../styles/App.module.css";
 
 export const Slider = (props) => {
-  const [mouseCoordinates, setMouseCoordinates] = useState(0);
+  const [startCoordinates, setStartCoordinates] = useState(0);
+  const [endCoordinates, setEndCoordinates] = useState(0);
+  const [moveStatus, setMoveStatus] = useState(false);
   const divStyle = {
-    color: 'blue',
-    background: "red",
-    left: `${mouseCoordinates}px`
+    left: `${endCoordinates}px`
   };
 
-  const touch = (e)=>{
-    setMouseCoordinates(e.clientX);
-    console.log(e.clientX);
+  const isTouch = () => 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch) || navigator.maxTouchPoints > 0 || window.navigator.msMaxTouchPoints > 0;
+      
+  const currentXCoordinates = (e)=> isTouch() ? e.nativeEvent.touches[0].clientX : e.clientX;
+  
+  const sliderMove = (xCoordinates) => {
+    setEndCoordinates(startCoordinates - xCoordinates);
+    console.log(startCoordinates - xCoordinates)
+  }
+
+  const startSwipe = (e)=>{
+    setMoveStatus(true);
+    setStartCoordinates(currentXCoordinates(e));
+  }
+  
+  const swipe = (e)=>{
+    if(moveStatus){
+      sliderMove(currentXCoordinates(e));
+    }
   }
 
   return (
-    <div onMouseDown={(e) => {
-      touch(e)
-    }}  className={styles.slider}>
+    <div 
+    onMouseDown={(e) => {startSwipe(e)}}  
+    onMouseMove={(e) => {swipe(e)}} 
+    onMouseUp={() => {setMoveStatus(false)}} 
+    onTouchStart={(e) => {startSwipe(e)}} 
+    onTouchMove={(e) => {swipe(e)}} 
+    onTouchEnd={() => {setMoveStatus(false)}}
+    className={styles.slider}>
       <div className={styles.slider__header}>
         <div className={styles.slider__header_logo}>L</div>
         <div className={styles.slider__header_title}>PROJECT</div>
