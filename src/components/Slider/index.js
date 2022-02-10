@@ -2,11 +2,11 @@ import {React, useState} from "react";
 import styles from "../../styles/App.module.css";
 
 export const Slider = (props) => {
-  let [startCoordinates, setStartCoordinates] = useState(0);
+  const [startCoordinates, setStartCoordinates] = useState(0);
   const [endCoordinates, setEndCoordinates] = useState(0);
   const [moveStatus, setMoveStatus] = useState(false);
   const divStyle = {
-    left: `${endCoordinates}px`
+    left: `-${endCoordinates}px`
   };
 
   const isTouch = () => 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch) || navigator.maxTouchPoints > 0 || window.navigator.msMaxTouchPoints > 0;
@@ -15,24 +15,17 @@ export const Slider = (props) => {
   
   const sliderMove = (xCoordinates) => {
     let newEndCoordinates;
+    // To left
     if(startCoordinates > xCoordinates){
-
-      newEndCoordinates = endCoordinates + (startCoordinates - xCoordinates);
-      console.log(endCoordinates, "endCoordinates");
-      setEndCoordinates((newEndCoordinates)*-1);
-      // setStartCoordinates(startCoordinates++);
-    }
-    if(startCoordinates < xCoordinates){
-
-      newEndCoordinates = endCoordinates + (xCoordinates - startCoordinates);
-      if(xCoordinates >= 0){
-        return;
-        }
+      newEndCoordinates = (startCoordinates - xCoordinates);
       setEndCoordinates(newEndCoordinates);
-      setStartCoordinates(xCoordinates++);
     }
-    
-    console.log(startCoordinates, xCoordinates)
+    // To right
+    if(startCoordinates < xCoordinates){  
+      let oldEndCoordinates = endCoordinates;
+      newEndCoordinates = oldEndCoordinates - (xCoordinates - startCoordinates);
+      setEndCoordinates(newEndCoordinates);
+    }
   }
 
   const startSwipe = (e)=>{
