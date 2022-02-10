@@ -2,7 +2,7 @@ import {React, useState} from "react";
 import styles from "../../styles/App.module.css";
 
 export const Slider = (props) => {
-  const [startCoordinates, setStartCoordinates] = useState(0);
+  let [startCoordinates, setStartCoordinates] = useState(0);
   const [endCoordinates, setEndCoordinates] = useState(0);
   const [moveStatus, setMoveStatus] = useState(false);
   const divStyle = {
@@ -14,8 +14,25 @@ export const Slider = (props) => {
   const currentXCoordinates = (e)=> isTouch() ? e.nativeEvent.touches[0].clientX : e.clientX;
   
   const sliderMove = (xCoordinates) => {
-    setEndCoordinates(startCoordinates - xCoordinates);
-    console.log(startCoordinates - xCoordinates)
+    let newEndCoordinates;
+    if(startCoordinates > xCoordinates){
+
+      newEndCoordinates = endCoordinates + (startCoordinates - xCoordinates);
+      console.log(endCoordinates, "endCoordinates");
+      setEndCoordinates((newEndCoordinates)*-1);
+      // setStartCoordinates(startCoordinates++);
+    }
+    if(startCoordinates < xCoordinates){
+
+      newEndCoordinates = endCoordinates + (xCoordinates - startCoordinates);
+      if(xCoordinates >= 0){
+        return;
+        }
+      setEndCoordinates(newEndCoordinates);
+      setStartCoordinates(xCoordinates++);
+    }
+    
+    console.log(startCoordinates, xCoordinates)
   }
 
   const startSwipe = (e)=>{
