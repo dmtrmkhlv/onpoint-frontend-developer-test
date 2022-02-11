@@ -46,5 +46,14 @@
     border: 2px solid red;
     box-sizing: border-box;
     color: #e2e2e2;
+    &:nth-child(1){
+      background-color: aqua;
+    }
+    &:nth-child(2){
+      background-color: rgb(255, 217, 0);
+    }
+    &:nth-child(3){
+      background-color: rgb(98, 0, 255);
+    }
   }
 }

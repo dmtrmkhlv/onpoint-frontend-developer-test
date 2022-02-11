@@ -5,27 +5,72 @@ export const Slider = (props) => {
   const [startCoordinates, setStartCoordinates] = useState(0);
   const [endCoordinates, setEndCoordinates] = useState(0);
   const [prevEndCoordinates, setPrevEndCoordinates] = useState(0);
+  const [swipeDirection, setSwipeDirection] = useState('');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [moveStatus, setMoveStatus] = useState(false);
   const divStyle = {
     left: `-${endCoordinates}px`
   };
 
+  /**
+   * 
+   * @param {number} boost ускорение анимации
+   * @param {number} xUpdate обновление текущей координаты слайда
+   * @param {number} newCoordinates новая конечная координата слайда
+   */
+  const animationSpeed = (boost, xUpdate, newCoordinates)=>{
+    let int = setInterval(() => {
+      xUpdate = xUpdate - boost;
+      boost += 10;
+      if(xUpdate <= newCoordinates + 50){
+        xUpdate = newCoordinates;
+      }
+      if(xUpdate == newCoordinates){
+        clearInterval(int);
+      }
+      setEndCoordinates(xUpdate);
+    }, 5);
+  }
+/**
+ * 
+ * @param {number} x координата курсора в момент прекращения касания
+ * @param {nember} width ширина экрана
+ */
   const swipeAnimation = (x, width)=>{
-    let newCoordinates = 0;
-    if(x < width/2){
-
+    console.log(swipeDirection)
+    let newCoordinates;
+    let xUpdate = x;
+    let boost = 10;
+    if(swipeDirection === 'toLeft'){
+      if(prevEndCoordinates == 0){
+        newCoordinates = width;
+      }
+      if(prevEndCoordinates == width){
+        newCoordinates = width * 2;
+      }
     }
-    if(x >= width/2){
-      newCoordinates = width;
+    if(swipeDirection === 'toRight'){
+      if(prevEndCoordinates == width){
+        newCoordinates = 0;
+      }
+      if(prevEndCoordinates == width * 2){
+        newCoordinates = width;
+      }
     }
-    if(x < (width *2 + width/2) && x > (width * 2)){
-      newCoordinates = width;
-    }
-    if(x > (width + width/2) && x <= (width * 2)){
-      newCoordinates = width * 2;
-    }
-    setEndCoordinates(newCoordinates);
+    // if(x < width/2){
+    //   newCoordinates = 0;
+    // }
+    // if(x >= width/2){
+    //   newCoordinates = width;
+    // }
+    // if(x < (width *2 + width/2) && x > (width * 2)){
+    //   newCoordinates = width;
+    // }
+    // if(x > (width + width/2) && x <= (width * 2)){
+    //   newCoordinates = width * 2;
+    // }
+    animationSpeed(boost, xUpdate, newCoordinates);
+    // setEndCoordinates(newCoordinates);
     setPrevEndCoordinates(newCoordinates);
   }
 
@@ -33,6 +78,11 @@ export const Slider = (props) => {
       
   const currentXCoordinates = (e)=> isTouch() ? e.nativeEvent.touches[0].clientX : e.clientX;
   
+  /**
+   * 
+   * @param {number} xCoordinates координата курсора в момент касания
+   * @returns 
+   */
   const sliderMove = (xCoordinates) => {
     let newEndCoordinates;
     // To left
@@ -41,11 +91,13 @@ export const Slider = (props) => {
       if(newEndCoordinates >= windowWidth * 2){
         return;
       }
+      setSwipeDirection("toLeft");
       setEndCoordinates(newEndCoordinates);
     }
     // To right
     if(startCoordinates < xCoordinates){  
       newEndCoordinates = Math.round(prevEndCoordinates - (xCoordinates - startCoordinates));
+      setSwipeDirection("toRight");
       setEndCoordinates(newEndCoordinates);
     }
   }

@@ -67,4 +67,16 @@
           box-sizing: border-box;
   color: #e2e2e2;
 }
+
+.slider__item:nth-child(1) {
+  background-color: aqua;
+}
+
+.slider__item:nth-child(2) {
+  background-color: #ffd900;
+}
+
+.slider__item:nth-child(3) {
+  background-color: #6200ff;
+}
 /*# sourceMappingURL=App.module.css.map */
