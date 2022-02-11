@@ -4,6 +4,7 @@ import styles from "../../styles/App.module.css";
 export const Slider = (props) => {
   const [startCoordinates, setStartCoordinates] = useState(0);
   const [endCoordinates, setEndCoordinates] = useState(0);
+  const [prevEndCoordinates, setPrevEndCoordinates] = useState(0);
   const [moveStatus, setMoveStatus] = useState(false);
   const divStyle = {
     left: `-${endCoordinates}px`
@@ -17,13 +18,12 @@ export const Slider = (props) => {
     let newEndCoordinates;
     // To left
     if(startCoordinates > xCoordinates){
-      newEndCoordinates = (startCoordinates - xCoordinates);
+      newEndCoordinates = Math.round(prevEndCoordinates + (startCoordinates - xCoordinates));
       setEndCoordinates(newEndCoordinates);
     }
     // To right
     if(startCoordinates < xCoordinates){  
-      let oldEndCoordinates = endCoordinates;
-      newEndCoordinates = oldEndCoordinates - (xCoordinates - startCoordinates);
+      newEndCoordinates = Math.round(prevEndCoordinates - (xCoordinates - startCoordinates));
       setEndCoordinates(newEndCoordinates);
     }
   }
@@ -31,6 +31,11 @@ export const Slider = (props) => {
   const startSwipe = (e)=>{
     setMoveStatus(true);
     setStartCoordinates(currentXCoordinates(e));
+  }
+
+  const endSwipe = ()=>{
+    setMoveStatus(false);
+    setPrevEndCoordinates(endCoordinates);
   }
   
   const swipe = (e)=>{
@@ -43,10 +48,10 @@ export const Slider = (props) => {
     <div 
     onMouseDown={(e) => {startSwipe(e)}}  
     onMouseMove={(e) => {swipe(e)}} 
-    onMouseUp={() => {setMoveStatus(false)}} 
+    onMouseUp={() => {endSwipe()}} 
     onTouchStart={(e) => {startSwipe(e)}} 
     onTouchMove={(e) => {swipe(e)}} 
-    onTouchEnd={() => {setMoveStatus(false)}}
+    onTouchEnd={() => {endSwipe()}}
     className={styles.slider}>
       <div className={styles.slider__header}>
         <div className={styles.slider__header_logo}>L</div>
