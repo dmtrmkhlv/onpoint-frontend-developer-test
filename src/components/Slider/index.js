@@ -4,7 +4,6 @@ import styles from "../../styles/App.module.css";
 export const Slider = (props) => {
   const [startCoordinates, setStartCoordinates] = useState(0);
   const [endCoordinates, setEndCoordinates] = useState(0);
-  const [prevEndCoordinates, setPrevEndCoordinates] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState('');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [moveStatus, setMoveStatus] = useState(false);
@@ -14,17 +13,26 @@ export const Slider = (props) => {
 
   /**
    * 
+   * @param {number} speed скорость анимации
    * @param {number} boost ускорение анимации
    * @param {number} xUpdate обновление текущей координаты слайда
    * @param {number} newCoordinates новая конечная координата слайда
    */
-  const animationSpeed = (boost, xUpdate, newCoordinates)=>{
+  const animationSpeed = (speed, boost, xUpdate, newCoordinates)=>{
     let int = setInterval(() => {
-      xUpdate = xUpdate - boost;
-      boost += 10;
-      if(xUpdate <= newCoordinates + 50){
-        xUpdate = newCoordinates;
+      if(swipeDirection == 'toRight'){
+        xUpdate = xUpdate - speed;
+        if(xUpdate <= newCoordinates + 50){
+          xUpdate = newCoordinates;
+        }
       }
+      if(swipeDirection == 'toLeft'){
+        xUpdate = xUpdate + speed;
+        if(xUpdate >= newCoordinates + 50){
+          xUpdate = newCoordinates;
+        }
+      }
+      speed += boost;
       if(xUpdate == newCoordinates){
         clearInterval(int);
       }
@@ -37,41 +45,30 @@ export const Slider = (props) => {
  * @param {nember} width ширина экрана
  */
   const swipeAnimation = (x, width)=>{
-    console.log(swipeDirection)
     let newCoordinates;
-    let xUpdate = x;
-    let boost = 10;
     if(swipeDirection === 'toLeft'){
-      if(prevEndCoordinates == 0){
+      if(endCoordinates == 0){
         newCoordinates = width;
       }
-      if(prevEndCoordinates == width){
+      if(endCoordinates == width){
         newCoordinates = width * 2;
+      }
+      if(endCoordinates == width * 2){
+        return;
       }
     }
     if(swipeDirection === 'toRight'){
-      if(prevEndCoordinates == width){
+      if(endCoordinates == 0){
+        return;
+      }
+      if(endCoordinates == width){
         newCoordinates = 0;
       }
-      if(prevEndCoordinates == width * 2){
+      if(endCoordinates == width * 2){
         newCoordinates = width;
       }
     }
-    // if(x < width/2){
-    //   newCoordinates = 0;
-    // }
-    // if(x >= width/2){
-    //   newCoordinates = width;
-    // }
-    // if(x < (width *2 + width/2) && x > (width * 2)){
-    //   newCoordinates = width;
-    // }
-    // if(x > (width + width/2) && x <= (width * 2)){
-    //   newCoordinates = width * 2;
-    // }
-    animationSpeed(boost, xUpdate, newCoordinates);
-    // setEndCoordinates(newCoordinates);
-    setPrevEndCoordinates(newCoordinates);
+    animationSpeed(1, 2, x, newCoordinates);
   }
 
   const isTouch = () => 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch) || navigator.maxTouchPoints > 0 || window.navigator.msMaxTouchPoints > 0;
@@ -83,22 +80,14 @@ export const Slider = (props) => {
    * @param {number} xCoordinates координата курсора в момент касания
    * @returns 
    */
-  const sliderMove = (xCoordinates) => {
-    let newEndCoordinates;
+  const defineSlideDirection = (xCoordinates) => {
     // To left
     if(startCoordinates > xCoordinates){
-      newEndCoordinates = Math.round(prevEndCoordinates + (startCoordinates - xCoordinates));
-      if(newEndCoordinates >= windowWidth * 2){
-        return;
-      }
       setSwipeDirection("toLeft");
-      setEndCoordinates(newEndCoordinates);
     }
     // To right
     if(startCoordinates < xCoordinates){  
-      newEndCoordinates = Math.round(prevEndCoordinates - (xCoordinates - startCoordinates));
       setSwipeDirection("toRight");
-      setEndCoordinates(newEndCoordinates);
     }
   }
 
@@ -109,13 +98,12 @@ export const Slider = (props) => {
 
   const endSwipe = ()=>{
     setMoveStatus(false);
-    setPrevEndCoordinates(endCoordinates);
     swipeAnimation(endCoordinates, windowWidth);
   }
   
   const swipe = (e)=>{
     if(moveStatus){
-      sliderMove(currentXCoordinates(e));
+      defineSlideDirection(currentXCoordinates(e));
     }
   }
 
