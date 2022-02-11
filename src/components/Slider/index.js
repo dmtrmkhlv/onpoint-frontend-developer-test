@@ -19,7 +19,10 @@ export const Slider = (props) => {
     if(x >= width/2){
       newCoordinates = width;
     }
-    if(x > width && x <= (width + width/2)){
+    if(x < (width *2 + width/2) && x > (width * 2)){
+      newCoordinates = width;
+    }
+    if(x > (width + width/2) && x <= (width * 2)){
       newCoordinates = width * 2;
     }
     setEndCoordinates(newCoordinates);
