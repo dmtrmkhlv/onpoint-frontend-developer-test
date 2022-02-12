@@ -1,13 +1,14 @@
-import {React, useState, useEffect} from "react";
+import {React, useState, useRef, useEffect} from "react";
 import styles from "../../styles/App.module.css";
 
 export const Slider = (props) => {
   const [startCoordinates, setStartCoordinates] = useState(0);
   const [endCoordinates, setEndCoordinates] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState('');
+  const [isSwipe, setIsSwipe] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [moveStatus, setMoveStatus] = useState(false);
-  const divStyle = {
+  
+  const slideStyle = {
     left: `-${endCoordinates}px`
   };
 
@@ -17,16 +18,17 @@ export const Slider = (props) => {
    * @param {number} boost ускорение анимации
    * @param {number} xUpdate обновление текущей координаты слайда
    * @param {number} newCoordinates новая конечная координата слайда
+   * @param {string} direction направление движения свайпа
    */
-  const animationSpeed = (speed, boost, xUpdate, newCoordinates)=>{
+  const animationSpeed = (speed, boost, xUpdate, newCoordinates, direction)=>{
     let int = setInterval(() => {
-      if(swipeDirection == 'toRight'){
+      if(direction == 'toRight'){
         xUpdate = xUpdate - speed;
         if(xUpdate <= newCoordinates + 50){
           xUpdate = newCoordinates;
         }
       }
-      if(swipeDirection == 'toLeft'){
+      if(direction == 'toLeft'){
         xUpdate = xUpdate + speed;
         if(xUpdate >= newCoordinates + 50){
           xUpdate = newCoordinates;
@@ -35,25 +37,28 @@ export const Slider = (props) => {
       speed += boost;
       if(xUpdate == newCoordinates){
         clearInterval(int);
+        setSwipeDirection("");
+        setStartCoordinates(0);
+        setIsSwipe(false);
       }
       setEndCoordinates(xUpdate);
     }, 5);
   }
 /**
  * 
- * @param {number} x координата курсора в момент прекращения касания
- * @param {nember} width ширина экрана
+ * @param {number} endXCoordinates отступ слева
+ * @param {number} widthScreen ширина экрана
  */
-  const swipeAnimation = (x, width)=>{
+  const swipeAnimation = (endXCoordinates, widthScreen)=>{
     let newCoordinates;
     if(swipeDirection === 'toLeft'){
       if(endCoordinates == 0){
-        newCoordinates = width;
+        newCoordinates = widthScreen;
       }
-      if(endCoordinates == width){
-        newCoordinates = width * 2;
+      if(endCoordinates == widthScreen){
+        newCoordinates = widthScreen * 2;
       }
-      if(endCoordinates == width * 2){
+      if(endCoordinates == widthScreen * 2){
         return;
       }
     }
@@ -61,16 +66,20 @@ export const Slider = (props) => {
       if(endCoordinates == 0){
         return;
       }
-      if(endCoordinates == width){
+      if(endCoordinates == widthScreen){
         newCoordinates = 0;
       }
-      if(endCoordinates == width * 2){
-        newCoordinates = width;
+      if(endCoordinates == widthScreen * 2){
+        newCoordinates = widthScreen;
       }
     }
-    animationSpeed(1, 2, x, newCoordinates);
+    animationSpeed(1, 2, endXCoordinates, newCoordinates, swipeDirection);
   }
 
+  /**
+   * 
+   * @returns возвращает является ли собыие касанием
+   */
   const isTouch = () => 'ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch) || navigator.maxTouchPoints > 0 || window.navigator.msMaxTouchPoints > 0;
       
   const currentXCoordinates = (e)=> isTouch() ? e.nativeEvent.touches[0].clientX : e.clientX;
@@ -92,35 +101,43 @@ export const Slider = (props) => {
   }
 
   const startSwipe = (e)=>{
-    setMoveStatus(true);
     setStartCoordinates(currentXCoordinates(e));
   }
 
-  const endSwipe = ()=>{
-    setMoveStatus(false);
-    swipeAnimation(endCoordinates, windowWidth);
-  }
-  
   const swipe = (e)=>{
-    if(moveStatus){
+    setIsSwipe(true);
       defineSlideDirection(currentXCoordinates(e));
+  }
+
+  const endSwipe = (e)=>{
+    if(isSwipe){
+      swipeAnimation(endCoordinates, windowWidth);
     }
   }
 
+  const swipeToFirstSlide = (e)=>{
+    if(endCoordinates == 0){
+      return;
+    }
+    animationSpeed(1, 2, endCoordinates, 0, 'toRight');   
+  }
+  
   return (
     <div 
-    onMouseDown={(e) => {startSwipe(e)}}  
-    onMouseMove={(e) => {swipe(e)}} 
-    onMouseUp={() => {endSwipe()}} 
+    // onMouseDown={(e) => {startSwipe(e)}}  
+    // onMouseMove={(e) => {swipe(e)}} 
+    // onMouseUp={(e) => {endSwipe(e)}} 
     onTouchStart={(e) => {startSwipe(e)}} 
     onTouchMove={(e) => {swipe(e)}} 
-    onTouchEnd={() => {endSwipe()}}
+    onTouchEnd={(e) => {endSwipe(e)}}
     className={styles.slider}>
       <div className={styles.slider__header}>
-        <div className={styles.slider__header_logo}>L</div>
+        <div 
+        onClick={(e) => {swipeToFirstSlide(e)}} 
+        className={styles.slider__header_logo}>L</div>
         <div className={styles.slider__header_title}>PROJECT</div>
       </div>
-      <div style={divStyle} className={styles.slider__box}>
+      <div style={slideStyle} className={styles.slider__box}>
         <div className={styles.slider__item}></div>
         <div className={styles.slider__item}></div>
         <div className={styles.slider__item}></div>

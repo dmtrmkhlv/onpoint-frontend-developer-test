@@ -1,3 +1,17 @@
+:root {
+  --slider-left: 1024px;
+}
+
+@keyframes animSlide {
+  0%{
+    left:var(--slider-left);
+  }
+  100%{
+    left:0px
+  }
+}
+
+
 * {
   margin: 0;
   padding: 0;
@@ -38,6 +52,11 @@
     align-items: center;
     justify-content: center;
     z-index: 1;
+
+    .animate{
+      animation: animSlide .3s linear 1;
+      animation-fill-mode: forwards;
+    }
   }
 
   &__item {
