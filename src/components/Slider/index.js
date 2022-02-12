@@ -12,6 +12,20 @@ export const Slider = (props) => {
     left: `-${endCoordinates}px`
   };
 
+
+  const ref = useRef();
+  const sliderBoxElement  = useRef(
+    new ResizeObserver((entries) => {
+      const { width } = entries[0].contentRect;
+      setWindowWidth(width / 3)
+    })
+  );
+ 
+  useEffect(() => {
+    sliderBoxElement.current.observe(ref.current);
+  }, 
+  [ref, sliderBoxElement]);
+
   /**
    * 
    * @param {number} speed скорость анимации
@@ -121,6 +135,10 @@ export const Slider = (props) => {
     }
     animationSpeed(1, 2, endCoordinates, 0, 'toRight');   
   }
+
+    const swipeFromFirstToSecondSlide = (e)=>{
+    animationSpeed(1, 2, endCoordinates, windowWidth, 'toLeft');   
+  }
   
   return (
     <div 
@@ -137,7 +155,7 @@ export const Slider = (props) => {
         className={styles.slider__header_logo}>L</div>
         <div className={styles.slider__header_title}>PROJECT</div>
       </div>
-      <div style={slideStyle} className={styles.slider__box}>
+      <div ref={ref} style={slideStyle} className={styles.slider__box}>
         <div className={styles.slider__item}></div>
         <div className={styles.slider__item}></div>
         <div className={styles.slider__item}></div>
