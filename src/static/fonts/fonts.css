@@ -1,35 +1,67 @@
 @font-face {
-    font-family: 'Gilroy';
-    src: url('Gilroy-Regular.eot');
-    src: local('Gilroy Regular'), local('Gilroy-Regular'),
-        url('Gilroy-Regular.eot?#iefix') format('embedded-opentype'),
-        url('Gilroy-Regular.woff2') format('woff2'),
-        url('Gilroy-Regular.woff') format('woff'),
-        url('Gilroy-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Gilroy";
+  src: url("Gilroy-Regular.eot");
+  src: local("Gilroy Regular"), local("Gilroy-Regular"),
+    url("Gilroy-Regular.eot?#iefix") format("embedded-opentype"),
+    url("Gilroy-Regular.woff2") format("woff2"),
+    url("Gilroy-Regular.woff") format("woff"),
+    url("Gilroy-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'Gilroy';
-    src: url('Gilroy-Light.eot');
-    src: local('Gilroy Light'), local('Gilroy-Light'),
-        url('Gilroy-Light.eot?#iefix') format('embedded-opentype'),
-        url('Gilroy-Light.woff2') format('woff2'),
-        url('Gilroy-Light.woff') format('woff'),
-        url('Gilroy-Light.ttf') format('truetype');
-    font-weight: 300;
-    font-style: normal;
+  font-family: "Gilroy";
+  src: url("Gilroy-Light.eot");
+  src: local("Gilroy Light"), local("Gilroy-Light"),
+    url("Gilroy-Light.eot?#iefix") format("embedded-opentype"),
+    url("Gilroy-Light.woff2") format("woff2"),
+    url("Gilroy-Light.woff") format("woff"),
+    url("Gilroy-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'Gilroy';
-    src: url('Gilroy-Extrabold.eot');
-    src: local('Gilroy Extrabold'), local('Gilroy-Extrabold'),
-        url('Gilroy-Extrabold.eot?#iefix') format('embedded-opentype'),
-        url('Gilroy-Extrabold.woff2') format('woff2'),
-        url('Gilroy-Extrabold.woff') format('woff'),
-        url('Gilroy-Extrabold.ttf') format('truetype');
-    font-weight: 800;
-    font-style: normal;
+  font-family: "Gilroy";
+  src: url("Gilroy-Extrabold.eot");
+  src: local("Gilroy Extrabold"), local("Gilroy-Extrabold"),
+    url("Gilroy-Extrabold.eot?#iefix") format("embedded-opentype"),
+    url("Gilroy-Extrabold.woff2") format("woff2"),
+    url("Gilroy-Extrabold.woff") format("woff"),
+    url("Gilroy-Extrabold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "DIN Pro";
+  src: url("DINPro.eot");
+  src: local("DIN Pro"), local("DINPro"),
+    url("DINPro.eot?#iefix") format("embedded-opentype"),
+    url("DINPro.woff") format("woff"), url("DINPro.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "DIN Pro";
+  src: url("DINPro-Bold.eot");
+  src: local("DIN Pro Bold"), local("DINPro-Bold"),
+    url("DINPro-Bold.eot?#iefix") format("embedded-opentype"),
+    url("DINPro-Bold.woff") format("woff"),
+    url("DINPro-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circe";
+  src: url("Circe-Regular.eot");
+  src: local("Circe"), local("Circe-Regular"),
+    url("Circe-Regular.eot?#iefix") format("embedded-opentype"),
+    url("Circe-Regular.woff") format("woff"),
+    url("Circe-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
